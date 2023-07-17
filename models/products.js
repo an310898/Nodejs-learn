@@ -34,9 +34,14 @@ module.exports = class Product {
 					});
 				})
 				.catch((err) => {
-					console.log(err);
+					this.save();
 				});
 		} else {
+			if (
+				!fs.existsSync(path.join(path.dirname(require.main.filename), "data"))
+			) {
+				fs.mkdirSync(path.join(path.dirname(require.main.filename), "data"));
+			}
 			fs.writeFileSync(p, "[]");
 			this.save();
 		}
