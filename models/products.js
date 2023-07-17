@@ -1,45 +1,48 @@
 const fs = require("fs");
 const path = require("path");
+
+const p = path.join(
+	path.dirname(require.main.filename),
+	"data",
+	"products.json"
+);
+const readDataFromFile = () => {
+	return new Promise((resolve, reject) => {
+		fs.readFile(p, (error, data) => {
+			if (error) {
+				reject([]);
+			} else {
+				resolve(JSON.parse(data));
+			}
+		});
+	});
+};
+
 module.exports = class Product {
 	constructor(title) {
 		this.title = title;
 	}
 
 	save() {
-		const p = path.join(
-			path.dirname(require.main.filename),
-			"data",
-			"products.json"
-		);
 		if (fs.existsSync(p)) {
-			fs.readFile(p, (error, data) => {
-				let products = [];
-				if (!error) {
-					products = JSON.parse(data);
-				}
-				products.push(this);
-				fs.writeFile(p, JSON.stringify(products), (err) => {
+			readDataFromFile()
+				.then((data) => {
+					let products = data;
+					products.push(this);
+					fs.writeFile(p, JSON.stringify(products), (err) => {
+						console.log(err);
+					});
+				})
+				.catch((err) => {
 					console.log(err);
 				});
-			});
 		} else {
 			fs.writeFileSync(p, "[]");
 			this.save();
 		}
 	}
 
-	static fetchAll(callback) {
-		const p = path.join(
-			path.dirname(require.main.filename),
-			"data",
-			"products.json"
-		);
-		fs.readFile(p, (error, data) => {
-			if (error) {
-				callback([]);
-			} else {
-				callback(JSON.parse(data));
-			}
-		});
+	static fetchAll() {
+		return readDataFromFile();
 	}
 };

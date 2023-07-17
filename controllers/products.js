@@ -12,7 +12,7 @@ const getProduct = (req, res, next) => {
 const addProduct = (req, res, next) => {
 	const product = new Product(req.body.title);
 	product.save();
-	res.redirect("/");
+	res.status(200).redirect("/");
 };
 
 module.exports = {
