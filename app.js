@@ -5,7 +5,7 @@ const expressHbs = require("express-handlebars");
 
 const adminRoute = require("./routes/admin");
 const shopRoute = require("./routes/shop");
-
+const fileNotFoundController = require("./controllers/404");
 const app = express();
 
 app.engine(
@@ -25,7 +25,5 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(shopRoute);
 app.use("/admin", adminRoute.routes);
 
-app.use("/", (req, res, next) => {
-	res.render("404", { pageTitle: "Page not found" });
-});
+app.use("/", fileNotFoundController.get404);
 app.listen(3000);
