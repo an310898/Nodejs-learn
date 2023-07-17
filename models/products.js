@@ -43,6 +43,8 @@ module.exports = class Product {
 	}
 
 	static fetchAll() {
-		return readDataFromFile();
+		return readDataFromFile()
+			.then((data) => data)
+			.catch(() => []);
 	}
 };
