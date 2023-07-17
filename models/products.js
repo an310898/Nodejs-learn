@@ -28,20 +28,18 @@ module.exports = class Product {
 		}
 	}
 
-	static fetchAll() {
-		return new Promise((resolve, reject) => {
-			const p = path.join(
-				path.dirname(require.main.filename),
-				"data",
-				"products.json"
-			);
-			fs.readFile(p, (error, data) => {
-				if (error) {
-					reject(error);
-				} else {
-					resolve(JSON.parse(data));
-				}
-			});
+	static fetchAll(callback) {
+		const p = path.join(
+			path.dirname(require.main.filename),
+			"data",
+			"products.json"
+		);
+		fs.readFile(p, (error, data) => {
+			if (error) {
+				callback([]);
+			} else {
+				callback(JSON.parse(data));
+			}
 		});
 	}
 };
