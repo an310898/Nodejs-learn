@@ -1,11 +1,15 @@
-const productController = require("../controllers/products");
-const productData = productController.products;
+const Product = require("../models/products");
+
 exports.getShop = (req, res, next) => {
-	res.render("shop", {
-		products: productData,
-		show: productData.length > 0,
-		productCSS: true,
-		pageTitle: "My shop",
-		activeShop: true,
-	});
+	Product.fetchAll()
+		.then((data) => {
+			res.render("shop", {
+				products: data,
+				show: data.length > 0,
+				productCSS: true,
+				pageTitle: "My shop",
+				activeShop: true,
+			});
+		})
+		.catch((err) => console.log(err));
 };
