@@ -3,7 +3,7 @@ const path = require("path");
 const rootDir = require("./util/path");
 const expressHbs = require("express-handlebars");
 
-const adminData = require("./routes/admin");
+const adminRoute = require("./routes/admin");
 const shopRoute = require("./routes/shop");
 
 const app = express();
@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(shopRoute);
-app.use("/admin", adminData.routes);
+app.use("/admin", adminRoute.routes);
 
 app.use("/", (req, res, next) => {
 	res.render("404", { pageTitle: "Page not found" });
