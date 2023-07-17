@@ -19,17 +19,23 @@ const readDataFromFile = () => {
 };
 
 module.exports = class Product {
-	constructor(title) {
+	constructor(title, imageUrl, description, price) {
 		this.title = title;
+		this.imageUrl = imageUrl;
+		this.description = description;
+		this.price = price;
 	}
 
 	save() {
 		if (fs.existsSync(p)) {
 			readDataFromFile()
 				.then((data) => {
-					let products = data;
-					products.push(this);
-					fs.writeFile(p, JSON.stringify(products), (err) => {
+					console.log();
+					data.push({
+						id: data.length === 0 ? 1 : data[data.length - 1].id + 1,
+						...this,
+					});
+					fs.writeFile(p, JSON.stringify(data), (err) => {
 						console.log(err);
 					});
 				})
@@ -45,6 +51,15 @@ module.exports = class Product {
 			fs.writeFileSync(p, "[]");
 			this.save();
 		}
+	}
+
+	static delete(id) {
+		readDataFromFile().then((data) => {
+			data = data.filter((x) => x.id !== +id);
+			fs.writeFile(p, JSON.stringify(data), (err) => {
+				console.log(err);
+			});
+		});
 	}
 
 	static fetchAll() {
