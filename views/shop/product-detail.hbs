@@ -1,0 +1,19 @@
+<main class="centered">
+    {{#if product}}
+    <h1>{{product.title}}</h1>
+    <hr>
+    <div class="card__image">
+        <img style="max-height: 203px; width: auto;" src={{product.imageUrl}}>
+    </div>
+    
+    <h2>${{product.price}}</h2>
+    <p>{{product.description}}</p>
+    <form action="/cart/{{product.id}}" method="POST">
+        <button  type="submit" class="btn">
+            Add to Cart
+        </button>
+    </form>
+{{else}}
+    <h1>Product not found</h1>
+{{/if}}
+</main>

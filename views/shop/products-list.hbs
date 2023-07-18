@@ -16,9 +16,12 @@
                         <p class="product__description">{{description}}</p>
                     </div>
                     <div class="card__actions">
-                        <form action="/add-to-cart" method="POST">
-                            <button class="btn">Add to Cart</button>
-                        </form>
+                        <a href="/product/{{id}}" class="btn">Details</a>
+                        <form action="/cart/{{id}}" method="POST">
+        <button  type="submit" class="btn">
+            Add to Cart
+        </button>
+    </form>
                     </div>
                 </article>
             {{/each}}

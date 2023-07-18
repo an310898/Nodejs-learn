@@ -30,7 +30,6 @@ form {
 
 .main-header__nav {
     height: 100%;
-    display: none;
     align-items: center;
 }
 
@@ -187,6 +186,10 @@ form {
     cursor: pointer;
 }
 
+.centered {
+    text-align: center;
+}
+
 .btn:hover,
 .btn:active {
     background-color: #00695c;
@@ -198,7 +201,7 @@ form {
         display: flex;
     }
 
-    #side-menu-toggle {
+    /* #side-menu-toggle {
         display: none;
-    }
+    } */
 }
