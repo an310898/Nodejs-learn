@@ -40,7 +40,9 @@ class Cart {
     readDataFromFile((content) => {
       let cart = content;
       const cartProduct = cart.products.find((x) => x.id === +prodId);
-
+      if (!cartProduct) {
+        return;
+      }
       const totalAmountDeletedProduct = cartProduct.qty * prodPrice;
       cart.products = cart.products.filter((prod) => prod.id !== +prodId);
       cart.totalPrice -= totalAmountDeletedProduct;
