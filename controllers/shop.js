@@ -36,8 +36,12 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  Cart.fetchAll();
-  res.render("shop/cart");
+  Cart.fetchAll((data) => {
+    res.render("shop/cart", {
+      products: data,
+      activeCart: true,
+    });
+  });
 };
 
 exports.postCart = (req, res, next) => {
@@ -45,6 +49,12 @@ exports.postCart = (req, res, next) => {
   Product.findById(prodId, (prod) => {
     Cart.addProduct(prodId, prod.price);
   });
+  res.redirect("/cart");
+};
+
+exports.postDeleteCart = (req, res, next) => {
+  const prodId = +req.body.productId;
+  Cart.deleteCartItem(prodId);
   res.redirect("/cart");
 };
 

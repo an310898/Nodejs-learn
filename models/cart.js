@@ -48,16 +48,18 @@ class Cart {
     });
   }
 
-  static fetchAll() {
+  static fetchAll(cb) {
     const Product = require("./products");
-
     readDataFromFile((content) => {
       Product.fetchAll((data) => {
         let arrCartProdId = content.products;
         let prodArr = [];
-        for (let prod of arrCartProdId) {
-          prodArr.push(data.find((x) => x.id === prod.id));
+        for (let item of arrCartProdId) {
+          const prod = data.find((x) => x.id === item.id);
+          prodArr.push({ ...prod, qty: item.qty });
         }
+
+        cb(prodArr);
       });
     });
   }
