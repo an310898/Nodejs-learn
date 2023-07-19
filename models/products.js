@@ -18,7 +18,7 @@ const readDataFromFile = (callback) => {
   });
 };
 
-module.exports = class Product {
+class Product {
   constructor(title, imageUrl, description, price) {
     this.title = title;
     this.imageUrl = imageUrl;
@@ -76,4 +76,6 @@ module.exports = class Product {
   static fetchAll(cb) {
     readDataFromFile(cb);
   }
-};
+}
+
+module.exports = Product;

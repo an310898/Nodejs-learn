@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const Product = require("./products");
 
 const p = path.join(path.dirname(require.main.filename), "data", "cart.json");
 
@@ -14,7 +13,7 @@ const readDataFromFile = (cb) => {
   });
 };
 
-module.exports = class Cart {
+class Cart {
   static addProduct(prodId, productPrice) {
     readDataFromFile((content) => {
       let cart = { products: [], totalPrice: 0 };
@@ -48,4 +47,20 @@ module.exports = class Cart {
       fs.writeFileSync(p, JSON.stringify(cart));
     });
   }
-};
+
+  static fetchAll() {
+    const Product = require("./products");
+
+    readDataFromFile((content) => {
+      Product.fetchAll((data) => {
+        let arrCartProdId = content.products;
+        let prodArr = [];
+        for (let prod of arrCartProdId) {
+          prodArr.push(data.find((x) => x.id === prod.id));
+        }
+      });
+    });
+  }
+}
+
+module.exports = Cart;

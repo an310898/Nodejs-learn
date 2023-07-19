@@ -36,6 +36,7 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
+  Cart.fetchAll();
   res.render("shop/cart");
 };
 
