@@ -1,9 +1,9 @@
 const Product = require("../models/products");
 
 const getAdminProduct = (req, res, next) => {
-  Product.fetchAll((data) => {
+  Product.fetchAll().then((prod) => {
     res.render("admin/products", {
-      products: data,
+      products: prod,
       pageTitle: "Admin product",
       formsCSS: true,
       productCSS: true,
@@ -30,13 +30,14 @@ const postAddProduct = (req, res, next) => {
     reqBody.description,
     reqBody.price
   );
+  console.log(product);
   product.save();
   res.status(200).redirect("/admin");
 };
 
 const getEditProduct = (req, res, next) => {
   const prodId = req.params.prodId;
-  Product.findById(prodId, (prod) => {
+  Product.findById(prodId).then((prod) => {
     res.render("admin/edit-product", {
       product: prod,
       formsCSS: true,
@@ -45,17 +46,21 @@ const getEditProduct = (req, res, next) => {
   });
 };
 const postEditProduct = (req, res, next) => {
-  const product = { id: +req.params.prodId, ...req.body };
-  Product.editById(product, (status) => {
-    if (status) {
-      res.redirect("/admin");
-    }
+  const product = { ...req.body };
+
+  Product.editById(req.params.prodId, product).then((data) => {
+    res.redirect("/admin");
   });
 };
 
 const postDeleteProduct = (req, res, next) => {
-  Product.deleteById(req.params.prodId);
-  res.redirect("/admin");
+  Product.deleteById(req.params.prodId).then((status) => {
+    if (status.acknowledged) {
+      res.redirect("/admin");
+    } else {
+      throw "something went wrong";
+    }
+  });
 };
 
 module.exports = {

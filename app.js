@@ -1,11 +1,12 @@
 const express = require("express");
 const path = require("path");
-const rootDir = require("./util/path");
 const expressHbs = require("express-handlebars");
 
 const adminRoute = require("./routes/admin");
 const shopRoute = require("./routes/shop");
 const fileNotFoundController = require("./controllers/404");
+const { run, mongoClient } = require("./util/database");
+
 const app = express();
 
 app.engine(
@@ -26,4 +27,4 @@ app.use(shopRoute);
 app.use("/admin", adminRoute);
 
 app.use("/", fileNotFoundController.get404);
-app.listen(3000);
+mongoClient(() => app.listen(3000));

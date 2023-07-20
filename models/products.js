@@ -1,22 +1,5 @@
-const fs = require("fs");
-const path = require("path");
-
-const Cart = require("./cart");
-
-const p = path.join(
-  path.dirname(require.main.filename),
-  "data",
-  "products.json"
-);
-const readDataFromFile = (callback) => {
-  fs.readFile(p, (error, data) => {
-    if (error) {
-      callback([]);
-    } else {
-      callback(JSON.parse(data));
-    }
-  });
-};
+const { ObjectId } = require("mongodb");
+const { getDb } = require("../util/database");
 
 class Product {
   constructor(title, imageUrl, description, price) {
@@ -27,54 +10,64 @@ class Product {
   }
 
   save() {
-    readDataFromFile((products) => {
-      this.id =
-        products.length === 0 ? 1 : products[products.length - 1].id + 1;
-      console.log(this);
-      products.push(this);
-      fs.writeFile(p, JSON.stringify(products), (err) => {
+    const db = getDb();
+    db.collection("products")
+      .insertOne(this)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
         console.log(err);
       });
-    });
   }
 
-  static findById(id, cb) {
-    readDataFromFile((data) => {
-      const product = data.find((p) => p.id === +id);
-      cb(product);
-    });
-  }
-
-  static editById(product, cb) {
-    readDataFromFile((data) => {
-      let dataArr = data;
-      const prodIndex = dataArr.findIndex((x) => x.id === product.id);
-      dataArr[prodIndex] = product;
-
-      fs.writeFile(p, JSON.stringify(dataArr), (err) => {
-        if (err === null) {
-          cb(true);
-        }
+  static fetchAll() {
+    return getDb()
+      .collection("products")
+      .find()
+      .toArray()
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    });
   }
 
+  static findById(prodId) {
+    return getDb()
+      .collection("products")
+      .find({ _id: new ObjectId(prodId) })
+      .next()
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  static editById(id, product) {
+    return getDb()
+      .collection("products")
+      .replaceOne({ _id: new ObjectId(id) }, product)
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   static deleteById(id) {
-    this.findById(id, (prod) => {
-      readDataFromFile((data) => {
-        data = data.filter((x) => x.id !== +id);
-
-        fs.writeFile(p, JSON.stringify(data), (err) => {
-          if (!err) {
-            Cart.deleteCartItem(id, prod.price);
-          }
-        });
+    return getDb()
+      .collection("products")
+      .deleteOne({ _id: new ObjectId(id) })
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    });
-  }
-
-  static fetchAll(cb) {
-    readDataFromFile(cb);
   }
 }
 
